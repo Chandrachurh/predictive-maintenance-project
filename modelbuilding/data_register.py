@@ -1,3 +1,4 @@
+
 import os
 from pathlib import Path
 import pandas as pd
@@ -22,8 +23,10 @@ print("Local file exists:", local_file.exists())
 if not local_file.exists():
     raise FileNotFoundError(f"File not found: {local_file}")
 
+# Initialize API
 api = HfApi(token=HF_TOKEN)
 
+# Create repo if not exists
 create_repo(
     repo_id=repo_id,
     repo_type=repo_type,
@@ -32,12 +35,18 @@ create_repo(
     exist_ok=True
 )
 
-df = pd.read_csv(local_file)
-dataset = Dataset.from_pandas(df)
+# ============================================================
+# 1. Upload RAW CSV with same file name
+# ============================================================
 
-dataset.push_to_hub(
-    repo_id,
+print("Uploading raw CSV file...")
+
+api.upload_file(
+    path_or_fileobj=str(local_file),
+    path_in_repo="engine_data.csv",   # 👈 keeps same name
+    repo_id=repo_id,
+    repo_type=repo_type,
     token=HF_TOKEN
 )
 
-print("Dataset uploaded successfully.")
+print("Dataset uploaded successfully (CSV + Parquet).")
