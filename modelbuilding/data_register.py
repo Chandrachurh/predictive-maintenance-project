@@ -43,7 +43,7 @@ print("Uploading raw CSV file...")
 
 api.upload_file(
     path_or_fileobj=str(local_file),
-    path_in_repo="engine_data.csv",   # 👈 keeps same name
+    path_in_repo="data/raw/engine_data.csv",   # 👈 keeps same name
     repo_id=repo_id,
     repo_type=repo_type,
     token=HF_TOKEN
