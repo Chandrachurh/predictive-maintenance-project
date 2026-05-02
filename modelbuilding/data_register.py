@@ -1,37 +1,43 @@
-from huggingface_hub import HfApi, create_repo
-from huggingface_hub.utils import RepositoryNotFoundError
 import os
+from pathlib import Path
+import pandas as pd
+from datasets import Dataset
+from huggingface_hub import HfApi, create_repo
+
+HF_TOKEN = os.environ.get("HF_TOKEN")
+
+if not HF_TOKEN:
+    raise ValueError("HF_TOKEN is missing.")
 
 repo_id = "chandrachurhghosh/predictive-maintenance-project"
 repo_type = "dataset"
 
-api = HfApi(token=os.getenv("HF_TOKEN"))
+project_root = Path.cwd()
+local_file = project_root / "data" / "raw" / "engine_data.csv"
 
-# Ensure dataset repo exists
-try:
-    api.repo_info(repo_id=repo_id, repo_type=repo_type)
-    print(f"Dataset '{repo_id}' already exists. Using it.")
-except RepositoryNotFoundError:
-    print(f"Dataset '{repo_id}' not found. Creating it...")
-    create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
+print("Working directory:", project_root)
+print("Looking for file:", local_file)
+print("Local file exists:", local_file.exists())
 
-# Local file path (relative to repo root in GitHub Actions)
-local_file = "/content/predictive-maintenance-project/data/raw/engine_data.csv"
-
-# Target path in HF dataset
-hf_path = "data/raw/engine_data.csv"
-
-print("Working directory:", os.getcwd())
-print("Local file exists:", os.path.isfile(local_file))
-
-if not os.path.isfile(local_file):
+if not local_file.exists():
     raise FileNotFoundError(f"File not found: {local_file}")
 
-api.upload_file(
-    path_or_fileobj=local_file,
-    path_in_repo=hf_path,
+api = HfApi(token=HF_TOKEN)
+
+create_repo(
     repo_id=repo_id,
-    repo_type=repo_type
+    repo_type=repo_type,
+    private=False,
+    token=HF_TOKEN,
+    exist_ok=True
 )
 
-print(f"Uploaded {local_file} → hf://datasets/{repo_id}/{hf_path}")
+df = pd.read_csv(local_file)
+dataset = Dataset.from_pandas(df)
+
+dataset.push_to_hub(
+    repo_id,
+    token=HF_TOKEN
+)
+
+print("Dataset uploaded successfully.")
