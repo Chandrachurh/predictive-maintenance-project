@@ -3,22 +3,28 @@ name: Predictive Maintenance Project
 on:
   push:
     branches:
-      - main  # Automatically triggers on push to the main branch
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   register-dataset:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v6
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4   # Updated version compatible with Node 24
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r visit_with_us_mlops/requirements.txt
+          pip install -r predictive-maintenance-project/requirements.txt
 
       - name: Debug repository structure
         run: |
@@ -28,7 +34,7 @@ jobs:
           echo "---- folders ----"
           find . -maxdepth 6 -type d | sort
 
-      - name: Upload Dataset to Hugging Face Hub
+      - name: Upload dataset to Hugging Face Hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python visit_with_us_mlops/modelbuilding/data_register.py
+        run: python predictive-maintenance-project/modelbuilding/data_register.py
