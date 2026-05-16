@@ -76,7 +76,7 @@ if st.button("Predict Engine Condition"):
     if hasattr(model, "predict_proba"):
         failure_probability = model.predict_proba(input_data)[0][1]
 
-        threshold = 0.75
+        threshold = 0.70
 
         if failure_probability > threshold:
             prediction = 1
@@ -99,9 +99,6 @@ if st.button("Predict Engine Condition"):
             st.error("Prediction: Faulty Engine / Maintenance Required")
         else:
             st.success("Prediction: Normal Engine Condition")
-
-    if failure_probability is not None:
-        st.write(f"Failure Probability: {failure_probability:.2%}")
 
 st.info(
     "This prediction is intended to support proactive maintenance decisions and should be used along with engineering judgment."
