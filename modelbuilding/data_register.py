@@ -49,4 +49,4 @@ api.upload_file(
     token=HF_TOKEN
 )
 
-print("Dataset uploaded successfully (CSV + Parquet).")
+print("Dataset uploaded successfully.")
