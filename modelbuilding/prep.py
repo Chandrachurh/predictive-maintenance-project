@@ -70,7 +70,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Works in both Colab and GitHub Actions
+# Prepare paths
 project_root = Path.cwd()
 processed_path = project_root / "data" / "processed"
 processed_path.mkdir(parents=True, exist_ok=True)
