@@ -1,25 +1,25 @@
-
+# Import libraries
 import os
 from pathlib import Path
 import pandas as pd
 from datasets import Dataset
 from huggingface_hub import HfApi, create_repo
-
+# Get Access Token
 HF_TOKEN = os.environ.get("HF_TOKEN")
-
+# Check if Access Token is missing
 if not HF_TOKEN:
     raise ValueError("HF_TOKEN is missing.")
-
+# Set Repository ID and Type
 repo_id = "chandrachurhghosh/predictive-maintenance-project"
 repo_type = "dataset"
-
+# Set Project path and file
 project_root = Path.cwd()
 local_file = project_root / "data" / "raw" / "engine_data.csv"
-
+# Log Working Directory, File Name, and that the local file exists
 print("Working directory:", project_root)
 print("Looking for file:", local_file)
 print("Local file exists:", local_file.exists())
-
+# Raise error if file not found
 if not local_file.exists():
     raise FileNotFoundError(f"File not found: {local_file}")
 
